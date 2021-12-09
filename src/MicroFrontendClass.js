@@ -1,16 +1,12 @@
-import { useEffect } from "react";
+import React from "react";
 
-const MicroFrontend = ({ name, host, history, ...rest }) => {
-  const elementId = `${name}-container`;
-  useEffect(() => {
+class MicroFrontendClass extends React.Component {
+  componentDidMount() {
+    const { name, host } = this.props;
     const scriptId = `micro-frontend-script-${name}`;
-    const renderMicroFrontend = () => {
-      window[`render_${name}`] &&
-        window[`render_${name}`](elementId, history, host, rest);
-    };
 
     if (document.getElementById(scriptId)) {
-      renderMicroFrontend();
+      this.renderMicroFrontend();
       return;
     }
 
@@ -36,9 +32,6 @@ const MicroFrontend = ({ name, host, history, ...rest }) => {
             );
             return sum;
           }, []);
-        // Promise.allSettled(jsPromises).then(() => {
-        // renderMicroFrontend();
-        // });
         const cssPromises = Object.keys(manifest)
           .filter((key) => key.endsWith(".css"))
           .reduce((sum, key) => {
@@ -61,17 +54,30 @@ const MicroFrontend = ({ name, host, history, ...rest }) => {
           }, []);
         console.log(jsPromises, cssPromises);
         Promise.allSettled([...jsPromises, ...cssPromises]).then(() => {
-          renderMicroFrontend();
+          this.renderMicroFrontend();
         });
       });
+  }
 
-    return () => {
-      console.log("time to unmount", elementId);
-      window[`unmount_${name}`] && window[`unmount_${name}`](elementId);
-    };
-  }, [name, host, history, rest]);
+  renderMicroFrontend = () => {
+    const { name, host, window, history, ...rest } = this.props;
+    window[`render_${name}`] &&
+      window[`render_${name}`](`${name}-container`, history, host, rest);
+  };
 
-  return <main id={elementId} />;
+  componentWillUnmount() {
+    const { name, window } = this.props;
+    window[`unmount_${name}`] && window[`unmount_${name}`](`${name}-container`);
+  }
+
+  render() {
+    return <main id={`${this.props.name}-container`} />;
+  }
+}
+
+MicroFrontendClass.defaultProps = {
+  document,
+  window,
 };
 
-export default MicroFrontend;
+export default MicroFrontendClass;
