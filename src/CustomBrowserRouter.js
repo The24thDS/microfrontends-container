@@ -4,16 +4,16 @@ import { Router } from "react-router-dom";
 const CustomBrowserRouter = ({ basename, history, children }) => {
   let historyRef = useRef(history);
 
-  let history = historyRef.current;
+  let historyValue = historyRef.current;
   let [state, setState] = useState({
-    action: history.action,
-    location: history.location,
+    action: historyValue.action,
+    location: historyValue.location,
   });
-  useLayoutEffect(() => history.listen(setState), [history]);
+  useLayoutEffect(() => historyValue.listen(setState), [historyValue]);
 
   return (
     <Router
-      navigator={history}
+      navigator={historyValue}
       location={state.location}
       navigationType={state.action}
       basename={basename}
