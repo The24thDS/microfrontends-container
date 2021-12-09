@@ -20,6 +20,7 @@ class MicroFrontendClass extends React.Component {
               new Promise((resolve) => {
                 const path = `${host}${manifest[key]}`;
                 const script = document.createElement("script");
+                script.type = "module";
                 if (key === "index.js") {
                   script.id = scriptId;
                 }
