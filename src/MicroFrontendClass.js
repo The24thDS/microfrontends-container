@@ -1,4 +1,5 @@
 import React from "react";
+import Loader from "react-loader-spinner";
 
 class MicroFrontendClass extends React.Component {
   componentDidMount() {
@@ -72,7 +73,11 @@ class MicroFrontendClass extends React.Component {
   }
 
   render() {
-    return <main id={`${this.props.name}-container`} />;
+    return (
+      <main id={`${this.props.name}-container`}>
+        <Loader type="Puff" color="#00BFFF" height={20} width={20} />
+      </main>
+    );
   }
 }
 
